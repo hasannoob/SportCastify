@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiveStream  Live Sports & TV</title>
+    <title>SportCastify Live Sports & TV</title>
     <!-- HLS.js for Live Video Streaming -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -48,7 +48,12 @@
         .tv-btn { background-color: #8b5cf6; border-color: #8b5cf6; color: white; }
         .tv-btn.active, .tv-btn:hover { background-color: #7c3aed; }
 
+        /* Default Grid (For Sports Match Cards) */
         .matches-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; padding: 0 20px 40px; max-width: 1200px; margin: 0 auto; }
+        
+        /* Specific Grid (Only For TV Channels) */
+        .matches-container.tv-grid { grid-template-columns: repeat(3, 1fr); }
+
         .match-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; position: relative;}
         .match-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         
@@ -60,6 +65,15 @@
         .status-live { background-color: var(--live-color); color: white; animation: blink 1.5s infinite; }
         .status-upcoming { background-color: #eab308; color: black; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        /* TV Responsive Design on smaller screens */
+        @media (max-width: 768px) {
+            .matches-container.tv-grid { gap: 10px; padding: 0 10px 20px; }
+            .matches-container.tv-grid .match-card { padding: 10px; }
+            .matches-container.tv-grid .team img { width: 45px; height: 45px; }
+            .matches-container.tv-grid .team-name { font-size: 12px; }
+            .matches-container.tv-grid .status-badge { font-size: 10px; padding: 4px 8px; margin-top: 5px;}
+        }
 
         /* --- DETAILS PAGE --- */
         .details-container { max-width: 800px; margin: 20px auto; padding: 20px; }
@@ -90,7 +104,7 @@
         .player-info h2 { margin-bottom: 15px; font-size: 20px; }
         .player-info .btn-telegram { display: inline-block; font-size: 16px; padding: 12px 25px; }
 
-        .no-data { text-align: center; padding: 50px; color: #888; font-size: 18px; width: 100%;}
+        .no-data { text-align: center; padding: 50px; color: #888; font-size: 18px; width: 100%; grid-column: 1 / -1;}
 
         /* --- FOOTER --- */
         footer { background-color: var(--footer-bg); padding: 30px 20px; text-align: center; border-top: 1px solid var(--border-color); margin-top: auto; }
@@ -108,14 +122,14 @@
             <button class="back-btn" id="backBtn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></button>
             <button class="theme-toggle" id="themeToggle"><i class="fa-solid fa-moon"></i></button>
         </div>
-        <div class="header-title">LIVESTREAM</div>
+        <div class="header-title">SportCastify</div>
         <a href="https://t.me/livefytv" class="btn-telegram" target="_blank"><i class="fa-brands fa-telegram"></i></a>
     </header>
 
     <!-- ================= VIEW 1: HOME PAGE ================= -->
     <div id="home-view" class="page-view active">
         <div class="scrolling-bar">
-            <div class="scrolling-text" id="dailyUpdate">🔥 Welcome to LiveStream ! Loading updates... 🔥</div>
+            <div class="scrolling-text" id="dailyUpdate">🔥 Welcome to SportCastify ! Loading updates... 🔥</div>
         </div>
 
         <div class="filters">
@@ -186,7 +200,7 @@
             <a href="#">Contact</a>
         </div>
         <div class="copyright">
-            &copy; <span id="currentYear"></span> LiveStream . All Rights Reserved.
+            &copy; <span id="currentYear"></span> SportCastify . All Rights Reserved.
         </div>
     </footer>
 
@@ -220,32 +234,27 @@
             let timeStr = match["Start Time"] || match["Start time"] || "";
             timeStr = timeStr.trim();
             
-            // If empty or indicates it's always running/already started
             if (!timeStr || timeStr.toLowerCase().includes("live now") || timeStr.toLowerCase().includes("always")) {
                 return 0; 
             }
 
-            // Parse Format V2 (e.g., "April 30, 2026, at 1:30 PM UTC")
             if (timeStr.includes("UTC")) {
                 let cleanStr = timeStr.replace(", at", "");
                 let d = new Date(cleanStr);
                 if (!isNaN(d.getTime())) return d.getTime();
             }
 
-            // Parse Format V1 (e.g., "1:00 AM 02-05-2026")
             let matchV1 = timeStr.match(/(\d{1,2}:\d{2}\s*[APM]{2})\s+(\d{1,2})-(\d{1,2})-(\d{4})/i);
             if (matchV1) {
                 let timePart = matchV1[1];
                 let day = matchV1[2];
                 let month = matchV1[3];
                 let year = matchV1[4];
-                // Converting to "YYYY/MM/DD hh:mm" for standard parsing
                 let standardStr = `${year}/${month}/${day} ${timePart}`;
                 let d = new Date(standardStr);
                 if (!isNaN(d.getTime())) return d.getTime();
             }
 
-            // Fallback for unparseable times
             return Infinity; 
         }
 
@@ -258,12 +267,10 @@
                 let isLiveA = statusA === 'LIVE' ? 1 : 0;
                 let isLiveB = statusB === 'LIVE' ? 1 : 0;
 
-                // Priority 1: LIVE matches go to the top
                 if (isLiveA !== isLiveB) {
                     return isLiveB - isLiveA;
                 }
 
-                // Priority 2: Sort Upcoming matches by Time (Ascending - earliest first)
                 let timeA = getMatchTimestamp(a);
                 let timeB = getMatchTimestamp(b);
                 
@@ -274,7 +281,6 @@
         // --- Fetch Data ---
         async function fetchAllData() {
             try {
-                // 1. Fetch Sports V1 (With Logos)
                 try {
                     const resV1 = await fetch(`${sportsV1Url}?t=${new Date().getTime()}`);
                     const dataV1 = await resV1.json();
@@ -282,19 +288,16 @@
                         dataV1.channels.forEach(item => {
                             const title = (item["Match Title"] || "").toLowerCase();
                             const league = (item["League"] || "").toLowerCase();
-                            
-                            // Filter Out Intro and Ads
                             if (!title.includes("intro") && !league.includes("intro") && !title.includes("ad ")) {
                                 allSports.push({ ...item, _format: 'v1' });
                             }
                         });
                     }
                     if(dataV1.playlist_info) {
-                        document.getElementById('dailyUpdate').innerText = `🔥 Welcome to LiveStream ! Watch Live Sports HD. Auto Updated at: ${dataV1.playlist_info.last_update_time || 'Just Now'}. 🔥`;
+                        document.getElementById('dailyUpdate').innerText = `🔥 Welcome to SportCastify ! Watch Live Sports HD. Auto Updated at: ${dataV1.playlist_info.last_update_time || 'Just Now'}. 🔥`;
                     }
                 } catch(e) { console.log("Failed to load Sports V1"); }
 
-                // 2. Fetch Sports V2 (Multiple Channels, No Logos)
                 try {
                     const resV2 = await fetch(`${sportsV2Url}?t=${new Date().getTime()}`);
                     const dataV2 = await resV2.json();
@@ -303,7 +306,6 @@
                     }
                 } catch(e) { console.log("Failed to load Sports V2"); }
 
-                // 3. Fetch Live TV Data
                 try {
                     const resTv = await fetch(`${tvJsonUrl}?t=${new Date().getTime()}`);
                     const dataTv = await resTv.json();
@@ -314,10 +316,7 @@
                     });
                 } catch(e) { console.log("Failed to load Live TV"); }
 
-                // Sort Matches by LIVE and Time
                 sortMatches();
-
-                // Render default (All Sports)
                 filterData('all', document.querySelector('.filter-btn'));
 
             } catch (error) {
@@ -333,8 +332,10 @@
             const container = document.getElementById('matchesContainer');
             container.innerHTML = '';
 
+            // Handle switching grid styles dynamically based on the active tab
             if(filter === 'tv') {
-                // RENDER TV CHANNELS
+                container.classList.add('tv-grid'); // TV er jonno 3 card class add kora holo
+                
                 if(allTvChannels.length === 0) {
                     container.innerHTML = "<div class='no-data'>No TV Channels found.</div>"; return;
                 }
@@ -345,18 +346,19 @@
 
                     container.innerHTML += `
                         <div class="match-card" onclick="openTvDetails(${index})">
-                            <div style="font-size:12px; color:#888; margin-bottom:10px; font-weight:bold;">${chGroup.toUpperCase()}</div>
-                            <div class="teams" style="justify-content: center;">
+                            <div style="font-size:11px; color:#888; margin-bottom:5px; font-weight:bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${chGroup.toUpperCase()}</div>
+                            <div class="teams" style="justify-content: center; margin-bottom: 5px;">
                                 <div class="team" style="width: 100%; display:flex; flex-direction:column; align-items:center;">
-                                    <img src="${chLogo}" alt="${chName}" style="width:80px; height:80px; background:#fff; border-radius:15px; padding:5px;">
-                                    <div class="team-name" style="font-size:16px; margin-top:10px;">${chName}</div>
+                                    <img src="${chLogo}" alt="${chName}" style="width:60px; height:60px; background:#fff; border-radius:15px; padding:5px;">
+                                    <div class="team-name" style="font-size:14px; margin-top:8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">${chName}</div>
                                 </div>
                             </div>
-                            <div class="status-badge status-live">LIVE TV</div>
+                            <div class="status-badge status-live" style="font-size:11px; padding: 4px 10px;">LIVE</div>
                         </div>`;
                 });
             } else {
-                // RENDER SPORTS (Combined V1 & V2)
+                container.classList.remove('tv-grid'); // Sports er jonno 3 card class remove kora holo
+                
                 const filtered = allSports.filter(m => {
                     if (filter === 'all') return true;
                     const status = (m["Match Status"] || m.Status || "upcoming").toLowerCase();
@@ -368,14 +370,13 @@
                 }
 
                 filtered.forEach(match => {
-                    const index = allSports.indexOf(match); // Get real index for accurate linking
+                    const index = allSports.indexOf(match);
 
                     const status = (match["Match Status"] || match.Status || "Upcoming").toUpperCase();
                     const isLive = status === 'LIVE';
                     
                     let cardHTML = '';
 
-                    // If V1 (With Logos)
                     if(match._format === 'v1') {
                         cardHTML = `
                             <div class="match-card" onclick="openSportsDetails(${index})">
@@ -389,7 +390,6 @@
                                 <div style="font-size:13px; color:var(--primary-color); margin-top:10px; font-weight:bold;">${match["Start Time"] || 'TBA'}</div>
                             </div>`;
                     } 
-                    // If V2 (No Logos, Text based)
                     else {
                         let matchTitle = match["match name"] || "Live Event";
                         let teamHTML = `<h2 style="color:var(--text-color); margin-bottom:10px; font-size:20px;">${matchTitle}</h2>`;
@@ -445,13 +445,12 @@
             else if(currentView === 'details') showView('home');
         }
 
-        // --- Sports Details (Handles both V1 & V2) ---
+        // --- Sports Details ---
         function openSportsDetails(index) {
             const match = allSports[index];
             const streamBox = document.getElementById('streamLinksContainer');
             streamBox.innerHTML = '';
             
-            // Format V1
             if(match._format === 'v1') {
                 document.getElementById('detTeams').innerHTML = `
                     <div class="teams" style="justify-content:center; gap:20px;">
@@ -477,7 +476,6 @@
                     <li><span>Status:</span> ${match["Match Status"] || 'N/A'}</li>
                 `;
             } 
-            // Format V2
             else {
                 const title = match["match name"] || "Live Event";
                 document.getElementById('detTeams').innerHTML = `<h2 style="color:var(--primary-color); font-size:26px; margin-bottom:10px;">${title}</h2>`;
