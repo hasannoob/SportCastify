@@ -1,9 +1,51 @@
 <!DOCTYPE html>
-<html lang="bn" data-theme="dark">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportCastify | Live Sports</title>
+    
+    <!-- ================= SEO Tags Starts ================= -->
+    <title>SportCastify | Watch Live Cricket, Football & TV Channels</title>
+    <meta name="description" content="SportCastify is your ultimate destination for ad-free live sports streaming. Watch live cricket, football, upcoming matches, and premium live TV channels for free.">
+    <meta name="keywords" content="live sports, watch live cricket, live football streaming, free live tv, IPL live, BPL live, sports stream, live matches, SportCastify">
+    <meta name="author" content="SportCastify">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical Tag (Replace href with your actual domain URL) -->
+    <link rel="canonical" href="https://sportcastify.vercel.app/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sportcastify.vercel.app/">
+    <meta property="og:title" content="SportCastify | Watch Live Sports & TV">
+    <meta property="og:description" content="Watch ad-free live sports, cricket matches, football leagues, and live TV channels. Enjoy seamless HD streaming.">
+    <!-- Replace content with your actual banner image URL -->
+    <meta property="og:image" content="https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png1200x630/111827/3b82f6?text=SportCastify+Live+Sports">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://sportcastify.vercel.app/">
+    <meta property="twitter:title" content="SportCastify | Watch Live Sports & TV">
+    <meta property="twitter:description" content="Watch ad-free live sports, cricket matches, football leagues, and live TV channels. Enjoy seamless HD streaming.">
+    <meta property="twitter:image" content="https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png1200x630/111827/3b82f6?text=SportCastify+Live+Sports">
+    <!-- ================= SEO Tags Ends ================= -->
+
+    <!-- Schema Markup (JSON-LD) for Google Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "SportCastify",
+      "url": "https://sportcastify.vercel.app/",
+      "description": "Watch live sports, cricket, football, and TV channels ad-free.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://sportcastify.vercel.app/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <!-- HLS.js for Live Video Streaming -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -44,7 +86,7 @@
 
         /* --- Header --- */
         header { background: var(--header-bg); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);}
-        .header-title { font-size: 22px; font-weight: 900; color: var(--primary-color); letter-spacing: 0.5px;}
+        h1.header-title { font-size: 22px; font-weight: 900; color: var(--primary-color); letter-spacing: 0.5px; margin: 0;}
         .btn-telegram { background-color: #0088cc; color: white; padding: 8px 16px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
         .btn-telegram:hover { background-color: #0077b5; transform: translateY(-2px); }
         .theme-toggle { background: none; border: none; color: var(--text-color); font-size: 20px; cursor: pointer; transition: 0.2s;}
@@ -54,6 +96,7 @@
         .back-btn:hover { color: var(--primary-color); }
 
         /* --- Views & Animations --- */
+        main { flex: 1; display: flex; flex-direction: column; }
         .page-view { display: none; animation: slideUp 0.3s ease-out; flex: 1; }
         .page-view.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -78,62 +121,42 @@
         .sports-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
         .tv-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px;}
 
-        /* ========================================================
-           🔥 UNIQUE CLEAN SPORTS CARD 🔥
-        ======================================================== */
+        /* --- Match Card --- */
         .match-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);}
         .match-card:hover { transform: translateY(-4px); border-color: var(--primary-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);}
         
-        /* Header inside card */
         .card-header { background: var(--card-header-bg); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border);}
         .league-tag { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: flex; align-items: center; gap: 5px;}
         
-        /* Status Badges */
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 10px; text-transform: uppercase; }
         .status-live { background: rgba(239, 68, 68, 0.1); color: var(--live-color); border: 1px solid rgba(239, 68, 68, 0.2); animation: pulseLive 2s infinite; }
         .status-upcoming { background: rgba(245, 158, 11, 0.1); color: var(--upcoming-color); border: 1px solid rgba(245, 158, 11, 0.2); }
         @keyframes pulseLive { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* Body (Teams) */
         .card-body { padding: 20px 15px; display: flex; justify-content: space-between; align-items: center; flex: 1;}
         .team { display: flex; flex-direction: column; align-items: center; width: 42%; text-align: center; gap: 8px;}
-        
-        /* Smaller Logos */
         .team img { width: 45px; height: 45px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;}
         .team-name { font-weight: 700; font-size: 13px; color: var(--text-color); line-height: 1.3;}
-        
-        /* Clean VS text */
         .vs-text { font-size: 14px; font-weight: 900; color: var(--text-muted); font-style: italic; opacity: 0.5;}
 
-        /* Footer (Time) */
         .card-footer { padding: 10px 15px; font-size: 12px; font-weight: 600; color: var(--primary-color); display: flex; align-items: center; justify-content: center; gap: 6px; border-top: 1px solid var(--card-border); background: var(--card-bg);}
-
-        /* Text-Only Match Title (For V2 Cards) */
         .text-match-title { font-size: 16px; font-weight: 800; text-align: center; color: var(--text-color); padding: 20px 15px; line-height: 1.4; flex: 1; display: flex; align-items: center; justify-content: center;}
 
-        /* ========================================================
-           🔥 CLEAN LIVE TV CARD 🔥
-        ======================================================== */
+        /* --- Live TV Card --- */
         .tv-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
         .tv-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.2);}
-        
-        /* Smaller TV Logos */
         .tv-logo-wrapper { width: 55px; height: 55px; background: #ffffff; border-radius: 10px; padding: 6px; display: flex; justify-content: center; align-items: center; border: 1px solid #e5e7eb;}
         .tv-logo-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
         .tv-name { font-size: 12px; font-weight: 700; color: var(--text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;}
         .live-dot-container { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 800; color: #10b981;}
         .live-dot { width: 6px; height: 6px; background-color: #10b981; border-radius: 50%; animation: pulseLive 1.5s infinite;}
-
 
         /* --- Details & Info Pages --- */
         .details-container { max-width: 800px; margin: 20px auto; padding: 20px; }
         .match-hero { background: var(--card-bg); border-radius: 12px; padding: 30px 20px; text-align: center; border: 1px solid var(--card-border); margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);}
         .match-hero h2 { color: var(--text-color); margin-bottom: 20px; font-size: 22px; font-weight: 800;}
-        
         .det-teams-layout { display: flex; justify-content: center; align-items: center; gap: 30px; margin-bottom: 20px;}
         .det-team { display: flex; flex-direction: column; align-items: center; width: 100px; gap: 10px;}
-        /* Smaller Details Logo */
         .det-team img { width: 65px; height: 65px; border-radius: 50%; background: #fff; padding: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;}
         .det-team-name { font-weight: 800; font-size: 15px; line-height: 1.3; color: var(--text-color);}
         .det-vs { font-size: 20px; font-weight: 900; color: var(--text-muted); font-style: italic; opacity: 0.5;}
@@ -141,7 +164,6 @@
         .stream-links { background: var(--card-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--card-border); text-align: center; margin-bottom: 20px;}
         .stream-links h3 { margin-bottom: 20px; font-size: 16px; font-weight: 800; color: var(--text-color);}
         .links-grid { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        
         .stream-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--primary-color); color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; width: 100%; max-width: 350px; transition: 0.2s;}
         .stream-btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
         .stream-btn.disabled { background: var(--card-border); color: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none;}
@@ -152,7 +174,6 @@
         .about-section ul { list-style: none; line-height: 2; font-size: 14px; color: var(--text-color);}
         .about-section ul li span { font-weight: 700; color: var(--text-muted); margin-right: 10px; }
 
-        /* Info Content Page */
         .info-content { text-align: left; line-height: 1.8; font-size: 15px; color: var(--text-color); }
         .info-content p { margin-bottom: 15px; }
 
@@ -173,7 +194,6 @@
         .footer-links a { color: var(--primary-color); text-decoration: none; font-weight: 700; font-size: 13px; transition: 0.2s; cursor: pointer;}
         .footer-links a:hover { color: var(--primary-hover); text-decoration: underline;}
         .copyright { color: var(--text-muted); font-size: 12px; }
-
     </style>
 </head>
 <body>
@@ -181,93 +201,93 @@
     <!-- Header -->
     <header>
         <div class="nav-left">
-            <button class="back-btn" id="backBtn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></button>
-            <button class="theme-toggle" id="themeToggle"><i class="fa-solid fa-moon"></i></button>
+            <button class="back-btn" id="backBtn" aria-label="Go Back" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
         </div>
-        <div class="header-title">SportCastify</div>
-        <a href="https://t.me/livefytv" class="btn-telegram" target="_blank" id="topTelegramBtn">
+        <!-- H1 used for SEO instead of a standard div -->
+        <h1 class="header-title">SportCastify</h1>
+        <a href="https://t.me/livefytv" class="btn-telegram" target="_blank" id="topTelegramBtn" rel="noopener noreferrer">
             <i class="fa-brands fa-telegram" style="font-size:16px;"></i> <span style="display:none;" id="joinText">Join</span>
         </a>
     </header>
 
-    <!-- ================= VIEW 1: HOME PAGE ================= -->
-    <div id="home-view" class="page-view active">
-        <!-- 
-            এখানে আপনি আপনার ইচ্ছামতো স্ক্রোলিং টেক্সট লিখতে পারেন। 
-        -->
-        <div class="scrolling-bar">
-            <div class="scrolling-text" id="dailyUpdate">🔥 Welcome to SportCastify! Premium Live Sports & TV Experience. Enjoy Ad-Free Streaming! 🔥</div>
+    <main>
+        <!-- ================= VIEW 1: HOME PAGE ================= -->
+        <div id="home-view" class="page-view active">
+            <div class="scrolling-bar">
+                <div class="scrolling-text" id="dailyUpdate">🔥 Welcome to SportCastify! Premium Live Sports & TV Experience. Enjoy Ad-Free Streaming! 🔥</div>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterData('all', this)">All</button>
+                <button class="filter-btn" onclick="filterData('live', this)"><i class="fa-solid fa-circle-dot" style="color:var(--live-color)"></i> Live</button>
+                <button class="filter-btn cricket-btn" onclick="filterData('cricket', this)"><i class="fa-solid fa-baseball-bat-ball"></i> Cricket</button>
+                <button class="filter-btn football-btn" onclick="filterData('football', this)"><i class="fa-regular fa-futbol"></i> Football</button>
+                <button class="filter-btn" onclick="filterData('upcoming', this)">Upcoming</button>
+                <button class="filter-btn tv-btn" onclick="filterData('tv', this)"><i class="fa-solid fa-tv"></i> Live TV</button>
+            </div>
+
+            <div class="matches-container sports-grid" id="matchesContainer">
+                <div class="no-data"><i class="fa-solid fa-circle-notch fa-spin"></i> Initializing Servers...</div>
+            </div>
         </div>
 
-        <div class="filters">
-            <button class="filter-btn active" onclick="filterData('all', this)">All</button>
-            <button class="filter-btn" onclick="filterData('live', this)"><i class="fa-solid fa-circle-dot" style="color:var(--live-color)"></i> Live</button>
-            <button class="filter-btn cricket-btn" onclick="filterData('cricket', this)"><i class="fa-solid fa-baseball-bat-ball"></i> Cricket</button>
-            <button class="filter-btn football-btn" onclick="filterData('football', this)"><i class="fa-regular fa-futbol"></i> Football</button>
-            <button class="filter-btn" onclick="filterData('upcoming', this)">Upcoming</button>
-            <button class="filter-btn tv-btn" onclick="filterData('tv', this)"><i class="fa-solid fa-tv"></i> Live TV</button>
-        </div>
-
-        <div class="matches-container sports-grid" id="matchesContainer">
-            <div class="no-data"><i class="fa-solid fa-circle-notch fa-spin"></i> Initializing Servers...</div>
-        </div>
-    </div>
-
-    <!-- ================= VIEW 2: DETAILS PAGE ================= -->
-    <div id="details-view" class="page-view">
-        <div class="details-container">
-            <div class="match-hero">
-                <div id="detTeams"></div>
-                <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px; align-items: center; flex-wrap: wrap;">
-                    <div id="detStatus" class="status-badge">STATUS</div>
-                    <div id="detTime" style="color:var(--primary-color); font-weight:700; font-size:14px;"><i class="fa-regular fa-clock"></i> Time</div>
+        <!-- ================= VIEW 2: DETAILS PAGE ================= -->
+        <div id="details-view" class="page-view">
+            <div class="details-container">
+                <div class="match-hero">
+                    <div id="detTeams"></div>
+                    <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <div id="detStatus" class="status-badge">STATUS</div>
+                        <div id="detTime" style="color:var(--primary-color); font-weight:700; font-size:14px;"><i class="fa-regular fa-clock"></i> Time</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="stream-links">
-                <h3><i class="fa-solid fa-satellite-dish"></i> Select Streaming Server</h3>
-                <div class="links-grid" id="streamLinksContainer">
-                    <!-- Links injected here -->
+                <div class="stream-links">
+                    <h3><i class="fa-solid fa-satellite-dish"></i> Select Streaming Server</h3>
+                    <div class="links-grid" id="streamLinksContainer">
+                        <!-- Links injected here -->
+                    </div>
                 </div>
-            </div>
 
-            <div class="about-section">
-                <h3><i class="fa-solid fa-align-left"></i> Event Details</h3>
-                <ul id="aboutDetails">
-                    <!-- About injected here -->
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= VIEW 3: PLAYER PAGE ================= -->
-    <div id="player-view" class="page-view">
-        <div class="player-container">
-            <div class="video-wrapper">
-                <video id="videoPlayer" controls autoplay></video>
-                <iframe id="iframePlayer" allowfullscreen scrolling="no" allow="encrypted-media; autoplay"></iframe>
-            </div>
-            
-            <div class="player-info">
-                <h2 id="playerMatchTitle">Now Playing</h2>
-                <a href="https://t.me/livefytv" class="btn-telegram" target="_blank">
-                    <i class="fa-brands fa-telegram"></i> Join Telegram For Quick Updates
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= VIEW 4: INFO PAGES ================= -->
-    <div id="info-view" class="page-view">
-        <div class="details-container">
-            <div class="match-hero" style="text-align: left; padding: 30px;">
-                <h2 id="infoTitle" style="color: var(--primary-color); font-size: 24px; margin-bottom: 20px;">Title</h2>
-                <div id="infoContent" class="info-content">
-                    Content goes here...
+                <div class="about-section">
+                    <h3><i class="fa-solid fa-align-left"></i> Event Details</h3>
+                    <ul id="aboutDetails">
+                        <!-- About injected here -->
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- ================= VIEW 3: PLAYER PAGE ================= -->
+        <div id="player-view" class="page-view">
+            <div class="player-container">
+                <div class="video-wrapper">
+                    <video id="videoPlayer" controls autoplay></video>
+                    <iframe id="iframePlayer" allowfullscreen scrolling="no" allow="encrypted-media; autoplay"></iframe>
+                </div>
+                
+                <div class="player-info">
+                    <h2 id="playerMatchTitle">Now Playing</h2>
+                    <a href="https://t.me/livefytv" class="btn-telegram" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-brands fa-telegram"></i> Join Telegram For Quick Updates
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= VIEW 4: INFO PAGES ================= -->
+        <div id="info-view" class="page-view">
+            <div class="details-container">
+                <div class="match-hero" style="text-align: left; padding: 30px;">
+                    <h2 id="infoTitle" style="color: var(--primary-color); font-size: 24px; margin-bottom: 20px;">Title</h2>
+                    <div id="infoContent" class="info-content">
+                        Content goes here...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <!-- ================= FOOTER ================= -->
     <footer>
@@ -306,15 +326,15 @@
         const tvJsonUrl = "https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/refs/heads/main/Channels_data.json";
         
         let allSports = [];
-        let allTvChannels = [];
+        let allTvChannels =[];
 
         function getSportType(match) {
             let category = (match["Category"] || match["Tour/Group name"] || match["League"] || "").toLowerCase();
             let title = (match["Match Title"] || match["match name"] || "").toLowerCase();
             let combined = category + " " + title;
 
-            const cricketKeywords = ['cricket', 't20', 'ipl', 'psl', 'bpl', 'odi', 'test match', 'icc', 'world cup', 't10'];
-            const footballKeywords = ['football', 'soccer', 'premier league', 'la liga', 'serie a', 'ligue 1', 'bundesliga', 'uefa', 'fifa', 'sudamericana', 'libertadores', 'champions league'];
+            const cricketKeywords =['cricket', 't20', 'ipl', 'psl', 'bpl', 'odi', 'test match', 'icc', 'world cup', 't10'];
+            const footballKeywords =['football', 'soccer', 'premier league', 'la liga', 'serie a', 'ligue 1', 'bundesliga', 'uefa', 'fifa', 'sudamericana', 'libertadores', 'champions league'];
 
             if (cricketKeywords.some(kw => combined.includes(kw))) return 'cricket';
             if (footballKeywords.some(kw => combined.includes(kw))) return 'football';
@@ -385,7 +405,7 @@
                 try {
                     const resTv = await fetch(`${tvJsonUrl}?t=${new Date().getTime()}`);
                     const dataTv = await resTv.json();
-                    let rawTv = Array.isArray(dataTv) ? dataTv : (dataTv.channels || []);
+                    let rawTv = Array.isArray(dataTv) ? dataTv : (dataTv.channels ||[]);
                     allTvChannels = rawTv.filter(ch => {
                         let name = (ch.name || ch.channel_name || "").toLowerCase();
                         return !name.includes("intro") && !name.includes("ad ");
@@ -414,7 +434,7 @@
                 }
                 allTvChannels.forEach((ch, index) => {
                     let chName = ch.name || ch.channel_name || "TV Channel";
-                    let chLogo = ch.logo || ch.tvg_logo || 'https://placehold.co/100x100/1e293b/ffffff?text=TV';
+                    let chLogo = ch.logo || ch.tvg_logo || 'https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png100x100/1e293b/ffffff?text=TV';
                     container.innerHTML += `
                         <div class="tv-card" onclick="openTvDetails(${index})">
                             <div class="tv-logo-wrapper"><img src="${chLogo}" alt="${chName}"></div>
@@ -457,9 +477,9 @@
                                     <span class="status-badge ${isLive ? 'status-live' : 'status-upcoming'}"><i class="fa-solid ${isLive ? 'fa-circle-dot' : 'fa-calendar'}"></i> ${status}</span>
                                 </div>
                                 <div class="card-body">
-                                    <div class="team"><img src="${match["Team 1 Logo"] || 'https://placehold.co/100'}"><div class="team-name">${match["Team 1 Name"] || "TBA"}</div></div>
+                                    <div class="team"><img src="${match["Team 1 Logo"] || 'https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png100'}" alt="${match["Team 1 Name"]}"><div class="team-name">${match["Team 1 Name"] || "TBA"}</div></div>
                                     <div class="vs-text">VS</div>
-                                    <div class="team"><img src="${match["Team 2 Logo"] || 'https://placehold.co/100'}"><div class="team-name">${match["Team 2 Name"] || "TBA"}</div></div>
+                                    <div class="team"><img src="${match["Team 2 Logo"] || 'https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png100'}" alt="${match["Team 2 Name"]}"><div class="team-name">${match["Team 2 Name"] || "TBA"}</div></div>
                                 </div>
                                 <div class="card-footer"><i class="fa-regular fa-clock"></i> ${match["Start Time"] || 'TBA'}</div>
                             </div>`;
@@ -534,9 +554,9 @@
             if(match._format === 'v1') {
                 document.getElementById('detTeams').innerHTML = `
                     <div class="det-teams-layout">
-                        <div class="det-team"><img src="${match["Team 1 Logo"] || 'https://placehold.co/100'}"><div class="det-team-name">${match["Team 1 Name"]}</div></div>
+                        <div class="det-team"><img src="${match["Team 1 Logo"] || 'https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png100'}" alt="${match["Team 1 Name"]}"><div class="det-team-name">${match["Team 1 Name"]}</div></div>
                         <div class="det-vs">VS</div>
-                        <div class="det-team"><img src="${match["Team 2 Logo"] || 'https://placehold.co/100'}"><div class="det-team-name">${match["Team 2 Name"]}</div></div>
+                        <div class="det-team"><img src="${match["Team 2 Logo"] || 'https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png100'}" alt="${match["Team 2 Name"]}"><div class="det-team-name">${match["Team 2 Name"]}</div></div>
                     </div>`;
                 document.getElementById('detTime').innerHTML = `<i class="fa-regular fa-clock"></i> ${match["Start Time"] || 'TBA'}`;
                 
@@ -579,11 +599,11 @@
         function openTvDetails(index) {
             const ch = allTvChannels[index];
             let chName = ch.name || ch.channel_name || "TV Channel";
-            let chLogo = ch.logo || ch.tvg_logo || 'https://placehold.co/100x100/1e293b/ffffff?text=TV';
+            let chLogo = ch.logo || ch.tvg_logo || 'https://i.ibb.co.com/R4GB80fW/file-00000000362c720b82d2686802d2176e.png100x100/1e293b/ffffff?text=TV';
             let chUrl = ch.url || ch.stream_url || ch.link;
 
             document.getElementById('detTeams').innerHTML = `
-                <img src="${chLogo}" style="width:100px; height:100px; background:#fff; border: 1px solid #e5e7eb; border-radius:16px; padding:10px; margin-bottom:15px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                <img src="${chLogo}" alt="${chName}" style="width:100px; height:100px; background:#fff; border: 1px solid #e5e7eb; border-radius:16px; padding:10px; margin-bottom:15px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
                 <h2>${chName}</h2>
             `;
             document.getElementById('detTime').style.display = 'none'; 
